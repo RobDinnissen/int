@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dienstnummer vandaag</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 2rem; }
+    .box { background: #fff; padding: 2rem; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { color: #0078D7; }
+    #telefoon { font-size: 1.5rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Dienstnummer van vandaag</h1>
+    <div id="telefoon">Laden...</div>
+  </div>
+
+  <script>
+    async function loadDienstnummer() {
+      const defaultNummer = "+31683177016";
+      try {
+        const response = await fetch("dienstnummers.json");
+        const data = await response.json();
+
+        const vandaag = new Date().toISOString().split("T")[0]; // 'yyyy-mm-dd'
+        const dienst = data.find(entry => entry.datum === vandaag);
+
+        const nummer = dienst ? dienst.telefoon : defaultNummer;
+        document.getElementById("telefoon").innerText = nummer;
+      } catch (error) {
+        console.error("Fout bij laden van dienstnummers:", error);
+        document.getElementById("telefoon").innerText = defaultNummer;
+      }
+    }
+
+    loadDienstnummer();
+  </script>
+</body>
+</html>
